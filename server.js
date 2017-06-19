@@ -1,8 +1,13 @@
 
-// Dependencies:
-
+	// Dependencies:
 	const express = require("express");
-	const mongojs = require("mongojs");
+	const bodyParser = require("body-parser");
+	const logger = require("morgan");
+	const mongoose = require("mongoose");
+
+	// Requiring our Comment and Article models
+	const Comment = require("./models/Comment.js");
+	const Article = require("./models/Article.js");
 
 	// Require request and cheerio. This makes the scraping possible
 	// Snatches HTML from URLs
@@ -10,6 +15,8 @@
 	// Scrapes our HTML
 	const cheerio = require("cheerio");
 
+	// Set mongoose to leverage built in JavaScript ES6 Promises
+	mongoose.Promise = Promise;
 
 // First, tell the console what this server.js is doing
 console.log("\n******************************************\n" +
@@ -20,15 +27,31 @@ console.log("\n******************************************\n" +
 // Initialize Express
 	const app = express();
 
-// Database configuration
-	const databaseUrl = "scraperussf";
-	const collections = ["scrapedData"];
+// Use morgan and body parser with our app
+app.use(logger("dev"));
+app.use(bodyParser.urlencoded({
+	extended:false
+}));
 
-// Hook mongojs configuration to the db variable
-const db = mongojs(databaseUrl, collections);
+// Make public a static dir
+app.use(express.static("public"));
+
+// Database configuration with mongoose
+mongoose.connect("mongodb://localhost/scrapersoccer");
+const db = mongoose.connection;
+
+// Show any mongoose errors
 db.on("error", (error) => {
-	console.log("Database Error: ", error);
+	console.log("Mongoose Error: ", error);
 });
+
+// Once logged into the db through mongoose, log a sucess message
+db.once("open", () => {
+	console.log("Mongoose connection successful.");
+});
+
+
+
 
 // Main route (simple  Hello World Message)
 app.get("/", (req, res) => {
