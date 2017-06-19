@@ -37,7 +37,8 @@ app.use(bodyParser.urlencoded({
 app.use(express.static("public"));
 
 // Database configuration with mongoose
-mongoose.connect("mongodb://localhost/scrapersoccer");
+// mongoose.connect("mongodb://localhost/scrapersoccer");
+mongoose.commect("mongodb://heroku_zhdhz0fh:a8n9kesht3qqbneetjd6fe07d8@ds119772.mlab.com:19772/heroku_zhdhz0fh")
 const db = mongoose.connection;
 
 // Show any mongoose errors
