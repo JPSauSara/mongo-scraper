@@ -79,15 +79,15 @@ app.get ("/scrape", (req, res) => {
 
 			// Using our Article model, create a new entry
 			// This effectively passes the reult object to the entry (and the title and link)
-			// const entry = new Article(result);
+			const entry = new Article(result);
 
 			// Now, save that entry to the db
-			// entry.save((err, doc) => {
-			// 	if (err){
-			// 		throw err;
-			// 	} else
-			// 		console.lof(doc);
-			// });
+			entry.save((err, doc) => {
+				if (err){
+					throw err;
+				} else
+					console.log(doc);
+			});
 			docs.push(result);
 
 		});
@@ -97,6 +97,61 @@ app.get ("/scrape", (req, res) => {
 	// Tell the browser that we finished scraping the text
 	// res.send("Scrape Complete");
 });
+
+// This will get the articles we scraped from the mongoDB
+app.get("/articles", (req, res) => {
+	// Grab every doc in the Articles array
+	Article.find({}, (error, doc) => {
+		// Log any errors
+		if (error) {
+			console.log(error);
+		} else {
+			res.json(doc);
+		}
+	});
+});
+
+// Grab an article by it's ObjectId
+app.get("/articles/:id", (req, res) => {
+	// Using the id passed in the id parameter, prepare a query that finds the matching one in our db...
+	Article.findOne({"_id": req.params.id})
+	// ...and populate all of the notes associated with it
+	.populate("comment")
+	// now, execute our query
+	.exec((error, doc) => {
+		if (error) {
+			console.log(error);
+		} else {
+			res.json(doc);
+		}
+	});
+});
+
+// Create a new comment or delete an existing comment
+app.post("/articles/:id", (req, res) => {
+	// Create a new note and pass the req.body to the entry
+	const newComment = new Comment(req.body);
+
+	// And save the new comment to the db
+	newComment.save((error, doc) => {
+		if (error) {
+			console.log(error);
+		} else {
+			// Use the article id to find it's note
+			Article.findOneAndUpdate({"_id": req.params.id}, {"comment": doc._id})
+			// Execute the above query
+			.exec((err, doc) => {
+				if (err) {
+					console.log(err);
+				} else {
+					res.send(doc);
+				}
+			});
+		}
+	});
+});
+
+
 
 // Listen on port 3000
 app.listen(3000, ()=> {
