@@ -51,78 +51,54 @@ db.once("open", () => {
 });
 
 
+// Routes ========================================
 
 
-// Main route (simple  Hello World Message)
-app.get("/", (req, res) => {
-	res.send("Hello World");
-});
 
-// Retrieve data from the db
-app.get("/articles", (req, res) => {
-	db.scrapedData.find({}, (error, found) => {
-		// Throw any errors to the console
-		if (error) {
-			console.log (error);
-		}
-		// If there are no errors, send the data to the browser as a json
-		else {
-			res.json(found);
-		}
-	});
-});
-
-
-// Scrape data from one site and place it into the mongodb db
+// A GET request to scrape data and place it into the mongodb db
 app.get ("/scrape", (req, res) => {
 
 	// Making a request call or ussoccer.com's homepage
-	request("http://www.ussoccer.com/", (error,response,html) => {
+	request("http://www.espnfc.us/", (error,response,html) => {
 
 		// Load the body of the HTML into cheerio
 		const $ = cheerio.load(html);
 
 		// Empty array to save our scraped data
-		// const result = [];
+		const docs = [];
 
-		// With cheerio, find each div-tag with the class "pod-summary"
-		$("div.pod-summary").each((i, element) => {
+		// With cheerio, find each div-tag with the class "first-row"
+		$("div.text-content").each((i, element) => {
 
-			const summary = $(element).find("span").text();
+			// Save an empty result object
+			var result = {};
 
-			// If this title element had both a title and a link
-			if (summary) {
-				// Save the data in the scrapedData db
-				db.scrapedData.save({
-					summary: summary,
-				}, (error, saved) => {
-					// If there's an error during this query
-					if (error) {
-						console.log(error);
-					}
-					else {
-						console.log(saved);
-					}
-				});
-			}
+			// Add the text and href of every link, and save them as properties of the result object
+			result.title = $(element).children().find("a").text();
+			result.link = $(element).find("a").attr("href")
 
-			// result.push({
-			// 	summary: summary,
+			// Using our Article model, create a new entry
+			// This effectively passes the reult object to the entry (and the title and link)
+			// const entry = new Article(result);
+
+			// Now, save that entry to the db
+			// entry.save((err, doc) => {
+			// 	if (err){
+			// 		throw err;
+			// 	} else
+			// 		console.lof(doc);
+			// });
+			docs.push(result);
+
 		});
+		res.json(docs);
 	});
 
-	// This will send a "Scrape Complete" message to the browser
-	res.send("Scrape Complete");
+	// Tell the browser that we finished scraping the text
+	// res.send("Scrape Complete");
 });
 
 // Listen on port 3000
 app.listen(3000, ()=> {
 	console.log("App running on port 3000!");
 });
-
-
-
-// After the program scans each div.pod-summary, log the result
-// console.log(result);
-
-// });
