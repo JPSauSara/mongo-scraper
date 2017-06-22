@@ -12,9 +12,12 @@
 
 	<!-- Latest compiled and minified JavaScript -->
 	<script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js" integrity="sha384-Tc5IQib027qvyjSMfHjOMaLkfuWVxZxUPnCJA7l2mCWNIpG9mGCD8wGNIcPD7Txa" crossorigin="anonymous"></script>
+
+	<script src="https://code.jquery.com/jquery-3.1.1.min.js"></script>
 	
-	<style type="text/css" href="assets/css/style.css"></style>
+	<link type="text/css" rel="stylesheet" href="assets/css/style.css"></link>
 </head>
+
 <body>
 	<nav class="navbar navbar-default">
 	  <div class="container-fluid">
@@ -24,21 +27,21 @@
 	    </div>
 	   
 	    <ul class="nav navbar-nav">
-	      <li class="active"><a href="/articles">HOME <span class="sr-only">(current)</span></a></li>
+	      <li class="active"><a href="/articles" method="post">HOME <span class="sr-only">(current)</span></a></li>
 	      <li><a href="/saved">Saved Articles</a></li>
 	     
 	    </ul>
-	    <button type="button" class="btn btn-primary navbar-btn">Scrape New Articles!</button>
+	    <button type="button" class="btn btn-primary navbar-btn" href="/scrape">Scrape New Articles!</button>
 	  </div><!-- /.container-fluid -->
 	</nav>
 
 	<div class="container">
-		<section class="row first-row">
+		<section class="row first-row text-center">
 			<div class="col-md-12">
 				
 				<div id="wrapper">
 		      <h1>Mongo Scraper</h1>
-		      <h2><i>Soccer Edition</i></h2>
+		      <h2>Soccer Edition</h2>
 		      <div id="articles"></div>
 		      <div id="comments"></div>
 	    	</div>
@@ -49,4 +52,5 @@
 	<script src="https://code.jquery.com/jquery-3.1.1.min.js"></script>
   <script src="app.js"></script>
 </body>
+
 </html>

@@ -1,3 +1,27 @@
-.first-row {
-	background-image: url("../images/subtlenet.jpg");
+
+body {
+		background-image: url("../images/soccerbkg2.jpg");
+		background-size: 100% auto;
+		background-repeat: no-repeat;
+		max-height: 90px;
+
+}
+
+.container-fluid {
+	background-image: url("../images/subtlenet2.png");
+}
+
+h1 {
+	color: #f65c26;
+	font-family: Impact, sans-serif;
+	font-size: 100px; 
+	font-weight: 100;
+}
+
+h2 {
+	color: white ;
+	font-family: "Courier New", Courier, monospace;
+	font-size: 40px;
+	font-weight: 500;	
+
 }
